@@ -1308,3 +1308,37 @@ void LcdDisplay::SetHideSubtitle(bool hide) {
         }
     }
 }
+
+void LcdDisplay::SetFullscreenText(const std::string& text) {
+    DisplayLockGuard lock(this);
+    if (fullscreen_overlay_ != nullptr) {
+        lv_obj_del(fullscreen_overlay_);
+        fullscreen_overlay_ = nullptr;
+    }
+    if (text.empty()) return;
+    auto lvgl_theme = static_cast<LvglTheme*>(current_theme_);
+    const lv_font_t* text_font = lvgl_theme ? lvgl_theme->text_font()->font() : &lv_font_montserrat_14;
+    fullscreen_overlay_ = lv_obj_create(lv_scr_act());
+    lv_obj_remove_style_all(fullscreen_overlay_);
+    lv_obj_set_pos(fullscreen_overlay_, 0, 0);
+    lv_obj_set_size(fullscreen_overlay_, LV_HOR_RES, LV_VER_RES);
+    lv_obj_set_style_bg_color(fullscreen_overlay_, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(fullscreen_overlay_, LV_OPA_COVER, 0);
+    lv_obj_set_style_pad_all(fullscreen_overlay_, 12, 0);
+    lv_obj_clear_flag(fullscreen_overlay_, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_style_border_width(fullscreen_overlay_, 0, 0);
+    lv_obj_move_foreground(fullscreen_overlay_);
+    lv_obj_t* label = lv_label_create(fullscreen_overlay_);
+    lv_label_set_text(label, text.c_str());
+    lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_width(label, LV_HOR_RES - 24);
+    lv_obj_set_style_text_font(label, text_font, 0);
+    lv_obj_set_style_text_color(label, lv_color_white(), 0);
+    lv_obj_set_style_text_line_space(label, 6, 0);
+    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
+    lv_obj_add_flag(fullscreen_overlay_, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(fullscreen_overlay_, [](lv_event_t* e) {
+        lv_obj_t* obj = lv_event_get_target(e);
+        lv_obj_del(obj);
+    }, LV_EVENT_CLICKED, nullptr);
+}
