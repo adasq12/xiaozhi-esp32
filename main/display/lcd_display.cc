@@ -1338,7 +1338,7 @@ void LcdDisplay::SetFullscreenText(const std::string& text) {
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
     lv_obj_add_flag(fullscreen_overlay_, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(fullscreen_overlay_, [](lv_event_t* e) {
-        lv_obj_t* obj = lv_event_get_target(e);
+        lv_obj_t* obj = static_cast<lv_obj_t*>(lv_event_get_target(e));
         lv_obj_del(obj);
     }, LV_EVENT_CLICKED, nullptr);
 }
