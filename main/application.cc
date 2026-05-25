@@ -580,6 +580,13 @@ void Application::InitializeProtocol() {
                     ESP_LOGW(TAG, "Unknown system command: %s", command->valuestring);
                 }
             }
+        } else if (strcmp(type->valuestring, "display") == 0) {
+            auto text = cJSON_GetObjectItem(root, "text");
+            if (cJSON_IsString(text)) {
+                Schedule([display, text_str = std::string(text->valuestring)]() {
+                    display->SetFullscreenText(text_str);
+                });
+            }
         } else if (strcmp(type->valuestring, "alert") == 0) {
             auto status = cJSON_GetObjectItem(root, "status");
             auto message = cJSON_GetObjectItem(root, "message");
