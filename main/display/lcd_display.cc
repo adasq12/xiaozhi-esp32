@@ -1331,11 +1331,14 @@ void LcdDisplay::SetFullscreenText(const std::string& text) {
     lv_obj_t* label = lv_label_create(fullscreen_overlay_);
     lv_label_set_text(label, text.c_str());
     lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_width(label, LV_HOR_RES - 24);
+    lv_obj_set_width(label, (LV_HOR_RES - 24) / 2);
     lv_obj_set_style_text_font(label, text_font, 0);
     lv_obj_set_style_text_color(label, lv_color_white(), 0);
-    lv_obj_set_style_text_line_space(label, 6, 0);
-    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);
+    lv_obj_set_style_text_line_space(label, 4, 0);
+    lv_obj_set_style_transform_scale(label, 512, 0);
+    lv_obj_set_style_transform_pivot_x(label, 0, 0);
+    lv_obj_set_style_transform_pivot_y(label, 0, 0);
+    lv_obj_align(label, LV_ALIGN_TOP_LEFT, 12, 12);
     lv_obj_add_flag(fullscreen_overlay_, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(fullscreen_overlay_, [](lv_event_t* e) {
         lv_obj_t* obj = static_cast<lv_obj_t*>(lv_event_get_target(e));
