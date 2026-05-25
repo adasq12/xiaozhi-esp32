@@ -32,6 +32,7 @@ protected:
     std::unique_ptr<LvglGif> gif_controller_ = nullptr;
     lv_obj_t* emoji_box_ = nullptr;
     lv_obj_t* chat_message_label_ = nullptr;
+    lv_obj_t* fullscreen_overlay_ = nullptr;
     esp_timer_handle_t preview_timer_ = nullptr;
     std::unique_ptr<LvglImage> preview_image_cached_ = nullptr;
     bool hide_subtitle_ = false;  // Control whether to hide chat messages/subtitles
@@ -56,6 +57,9 @@ public:
     
     // Set whether to hide chat messages/subtitles
     void SetHideSubtitle(bool hide);
+
+    // Fullscreen text overlay (for broadcast display)
+    virtual void SetFullscreenText(const std::string& text) override;
 };
 
 // SPI LCD display
